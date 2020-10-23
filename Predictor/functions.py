@@ -411,7 +411,7 @@ def delayTypeEncoder(df):
         else:
             ini=0
             for delay in df.loc[i].index:
-                if float(df.loc[i].loc[delay])>ini: #Jimi's correction
+                if float(df.loc[i].loc[delay])>ini:
                     ini=df.loc[i].loc[delay]
                     d=delay
                 else:
