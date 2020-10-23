@@ -349,7 +349,7 @@ print('Scale Test Data...')
 testdata_std = scaler.fit_transform(testdata[flight_data_numeric.columns.tolist()])
 testdata_std = pd.DataFrame(data=testdata_std, columns=testdata[flight_data_numeric.columns.tolist()].columns)
 
-
+# Run the different predictive models
 print('Starting Gradient Boost Regressor...')
 from sklearn.ensemble import GradientBoostingRegressor
 gbr = GradientBoostingRegressor()
@@ -357,3 +357,44 @@ gbr.fit(X_train_arr, y_train_arr)
 y_predgbr = gbr.predict(X_test_arr)
 y_pred_test_gbr = gbr.predict(testdata_std)
 score_gbr = r2_score(y_test_arr, y_predgbr)
+print('R2 = ', score_gbr)
+
+print('Starting Linear Regression (Degree = 1)...')
+degree = 1
+polyreg=make_pipeline(PolynomialFeatures(degree),LinearRegression())
+polyreg.fit(X_train_arr,y_train_arr)
+y_predArr = polyreg.predict(testdata_std)
+y_pred_split = polyreg.predict(X_test_arr)
+print('Sucess!')
+r2_deg1 = r2_score(y_test_arr, y_pred_split)
+mse_deg1 = mean_squared_error(y_test_arr, y_pred_split)
+rmse_deg1 = np.sqrt(mse_deg1)
+mae_deg1 = mean_absolute_error(y_test_arr, y_pred_split)
+print('R2 = ' + str(r2_deg1))
+
+print('Starting Ridge regression...')
+from sklearn.linear_model import Ridge
+ridgereg = Ridge(alpha=0.3)
+ridgereg.fit(X_train_arr, y_train_arr)
+y_pred_test_ridge = ridgereg.predict(testdata_std)
+y_predridge = ridgereg.predict(X_test_arr)
+score_ridge = r2_score(y_test_arr, y_predridge)
+print("R2 = ", score_ridge)
+
+print('Starting Lasso regression...')
+from sklearn.linear_model import Lasso
+lassoreg = Lasso(alpha=0.3)
+lassoreg.fit(X_train_arr, y_train_arr)
+y_pred_test_lasso = lassoreg.predict(testdata_std)
+y_predlasso = lassoreg.predict(X_test_arr)
+score_lasso = r2_score(y_test_arr, y_predlasso)
+print("R2 = ", score_lasso)
+
+print('Starting Random Forest Regressor...')
+from sklearn.ensemble import RandomForestRegressor
+rfr = RandomForestRegressor()
+rfr.fit(X_train_arr, y_train_arr)
+y_predrfr = rfr.predict(X_test_arr)
+y_pred_test_rfr = rfr.predict(testdata_std)
+score_rfr = r2_score(y_test_arr, y_predrfr)
+print('R2 = ', score_rfr)
